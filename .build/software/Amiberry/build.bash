@@ -111,12 +111,13 @@ fi
 v_ami=$(curl -sSf 'https://api.github.com/repos/BlitterStudio/amiberry/releases/latest' | mawk -F\" '/^  "tag_name"/{print $4}')
 [[ $v_ami ]] || { G_DIETPI-NOTIFY 1 'No latest Amiberry version found, aborting ...'; exit 1; }
 v_ami=${v_ami#v}
+v_ami='master'
 G_DIETPI-NOTIFY 2 "Building Amiberry version \e[33m$v_ami\e[90m for platform: \e[33m$PLATFORM"
 G_EXEC cd /tmp
-G_EXEC curl -sSfLO "https://github.com/BlitterStudio/amiberry/archive/v$v_ami.tar.gz"
+G_EXEC curl -sSfLO "https://github.com/BlitterStudio/amiberry/archive/$v_ami.tar.gz"
 [[ -d amiberry-$v_ami ]] && G_EXEC rm -R "amiberry-$v_ami"
-G_EXEC tar xf "v$v_ami.tar.gz"
-G_EXEC rm "v$v_ami.tar.gz"
+G_EXEC tar xf "$v_ami.tar.gz"
+G_EXEC rm "$v_ami.tar.gz"
 G_EXEC cd "amiberry-$v_ami"
 # - RISC-V: Workaround for missing ld.gold: https://github.com/BlitterStudio/amiberry/issues/1213
 RISCV_LD=()
@@ -204,7 +205,7 @@ suffix=${old_version#*-dietpi}
 # - control
 cat << _EOF_ > "$DIR/DEBIAN/control"
 Package: amiberry
-Version: $v_ami
+Version: 5.6.9-dietpi0
 Architecture: $(dpkg --print-architecture)
 Maintainer: MichaIng <micha@dietpi.com>
 Date: $(date -u '+%a, %d %b %Y %T %z')
